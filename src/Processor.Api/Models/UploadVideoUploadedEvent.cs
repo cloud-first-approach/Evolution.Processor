@@ -2,7 +2,8 @@
 {
     public class UploadVideoUploadedEvent
     {
-        public string Id { get; set; }
-        public string Url { get; set; }
+        public string BucketName { get; set; }
+        public string? Region { get; set; }
+        public string Bucketkey { get; set; }
     }
 }

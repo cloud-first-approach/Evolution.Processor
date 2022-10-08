@@ -10,6 +10,7 @@ using Amazon.S3;
 using Amazon.S3.Transfer;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.AspNetCore.Http.Features;
+using Processor.Api.Services;
 
 Log.Logger = new LoggerConfiguration().MinimumLevel
                .Debug()
@@ -62,6 +63,7 @@ builder.Services.AddControllers().AddDapr();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpClient();
+builder.Services.AddScoped<IStorageService, StorageService>();
 
 builder.Services.AddDefaultAWSOptions(builder.Configuration.GetAWSOptions());
 builder.Services.AddAWSService<IAmazonS3>();
@@ -78,8 +80,8 @@ if (app.Environment.IsDevelopment())
 
 //app.UseHttpsRedirection();
 
-app.UseAuthorization();
-app.UseJwtParser();
+//app.UseAuthorization();
+//app.UseJwtParser();
 
 app.UseCloudEvents();
 app.MapControllers();

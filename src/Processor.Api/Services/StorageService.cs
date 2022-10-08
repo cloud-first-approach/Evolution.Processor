@@ -2,6 +2,12 @@
 using Amazon.S3.Transfer;
 using System.Net;
 using Processor.Api.Models;
+using Processor.Api.AppSettings;
+using Processor.Api.Services.Models;
+using Microsoft.Extensions.Options;
+using Amazon.S3.Model;
+using Microsoft.Extensions.Logging;
+using System.Security.AccessControl;
 
 namespace Processor.Api.Services
 {
@@ -10,62 +16,61 @@ namespace Processor.Api.Services
         private readonly TransferUtility _transferUtility;
         private readonly IConfiguration _config;
         private readonly ILogger<StorageService> _logger;
+        private readonly StorageSettings _storageSettings;
 
         IAmazonS3 S3Client { get; set; }
-        public StorageService(IAmazonS3 s3Client, TransferUtility transferUtility, IConfiguration configuration, ILogger<StorageService> logger)
+        public StorageService(IAmazonS3 s3Client, TransferUtility transferUtility, IConfiguration configuration, ILogger<StorageService> logger, IOptions<StorageSettings> storageSettings)
         {
             S3Client = s3Client;
             _transferUtility = transferUtility;
             _config = configuration;
             _logger = logger;
+            _storageSettings = storageSettings.Value;
         }
-        public async Task SaveVideo(SaveProcessedVideoRequestModel videoRequestModel)
+        public async Task SaveVideo(UploadVideoRequestModel videoRequestModel)
         {
 
-            throw new NotImplementedException();    
+            var filePath = Path.GetTempFileName();
+
+            using (var stream = System.IO.File.Create(filePath))
+            {
+                await videoRequestModel.File.CopyToAsync(stream);
+            }
 
         }
 
-        public async Task GetVideo(GetSavedVideo videoRequestModel)
-        {
-
-            throw new NotImplementedException();
-
-        }
-
-        public async Task<string> UploadVideoToS3BucketAsync(UploadVideoRequestModel requestDto)
+        public async Task<UploadVideoResponseModel> UploadVideoToS3BucketAsync(UploadVideoRequestModel requestDto)
         {
             try
             {
                 var file = requestDto.File;
-                string bucketName = "evolution-video-uploads";
+                string bucketName = _storageSettings.BucketName;
 
-                            // Rename file to random string to prevent injection and similar security threats
+                // Rename file to random string to prevent injection and similar security threats
                 var trustedFileName = WebUtility.HtmlEncode(file.FileName);
                 var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
                 var randomFileName = Path.GetRandomFileName();
-                var trustedStorageName = "files/" + randomFileName + ext;
+                var trustedStorageKey = $"{_storageSettings.BucketFolder}/{randomFileName}{ext}";
 
                 // Create the image object to be uploaded in memory
                 var transferUtilityRequest = new TransferUtilityUploadRequest()
                 {
                     InputStream = file.OpenReadStream(),
-                    Key = trustedStorageName,
+                    Key = trustedStorageKey,
                     BucketName = bucketName,
                 };
 
-
                 transferUtilityRequest.Metadata.Add("originalFileName", trustedFileName);
 
-               // S3Client.UploadObjectFromStreamAsync(
+                // S3Client.UploadObjectFromStreamAsync(
                 await _transferUtility.UploadAsync(transferUtilityRequest);
-
-                // Retrieve Url
-                var ImageUrl = GenerateAwsFileUrl(bucketName, trustedStorageName);
 
                 _logger.LogInformation("File uploaded to Amazon S3 bucket successfully");
 
-                return ImageUrl;
+                return new UploadVideoResponseModel() { 
+                        Bucketkey = trustedStorageKey, 
+                        BucketName=bucketName,
+                };
             }
             catch (Exception ex) when (ex is NullReferenceException)
             {
@@ -80,25 +85,49 @@ namespace Processor.Api.Services
 
         }
 
-        private string GenerateAwsFileUrl(string bucketName, string key, bool useRegion = true)
+        public async Task<GetAllVideosResponseModel> GetAllVideos(GetAllVideosRequestModel videoRequestModel)
         {
-            // URL patterns: Virtual hosted style and path style
-            // Virtual hosted style
-            // 1. http://[bucketName].[regionName].amazonaws.com/[key]
-            // 2. https://[bucketName].s3.amazonaws.com/[key]
 
-            // Path style: DEPRECATED
-            // 3. http://s3.[regionName].amazonaws.com/[bucketName]/[key]
-            string publicUrl = string.Empty;
-            if (useRegion)
+            var response = await S3Client.ListObjectsV2Async(new ListObjectsV2Request() { 
+                BucketName = _storageSettings.BucketName,
+                MaxKeys = 10,
+                Prefix = _storageSettings.BucketFolder
+            });
+
+            var Videos = new List<VideoData>();
+            foreach (var obj in response.S3Objects)
             {
-                publicUrl = $"https://{bucketName}.s3.{_config.GetSection("AWS").GetValue<string>("Region")}.amazonaws.com/{key}";
+                var data = new VideoData()
+                {
+                    Key = obj.Key,
+                    Size = obj.Size,
+                    LastModified = obj.LastModified
+                };
+                Videos.Add(data);
             }
-            else
+
+            return new GetAllVideosResponseModel()
             {
-                publicUrl = $"https://{bucketName}.s3.ap-south-1.amazonaws.com/{key}";
-            }
-            return publicUrl;
+                Videos = Videos
+            }; 
+
+        }
+
+        public async Task<GetVideoDetailsResponseModel> GetVideoDetails(GetVideoDetailsRequestModel videoRequestModel)
+        {
+            var response = await S3Client.GetObjectAsync(videoRequestModel.BucketName,videoRequestModel.Key);
+
+            // await response.WriteResponseStreamToFileAsync($"{filePath}\\{objectName}", true, System.Threading.CancellationToken.None);
+
+            var details = new GetVideoDetailsResponseModel()
+            {
+                Key = response.Key,
+                LastModified = response.LastModified,
+                Size = response.ContentLength
+            };
+            
+
+            return details;
         }
     }
 }

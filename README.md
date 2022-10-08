@@ -1,8 +1,7 @@
 # Introduction 
 Processor Service
 
-dapr run --app-port 3000 --app-id processor --app-protocol http --dapr-http-port 3501 --components-path ../../dapr/components -- dotnet run
-
+dapr run --log-level debug --app-port 3000 --app-id processor --app-protocol http --dapr-http-port 3501 --components-path ../../dapr/components -- dotnet run
 # Getting Started
 TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
 1.	Installation process

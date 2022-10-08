@@ -1,11 +1,14 @@
 ﻿using Processor.Api.Models;
+using Processor.Api.Services.Models;
 
 namespace Processor.Api.Services
 {
     public interface IStorageService
     {
-        public Task SaveVideo(SaveProcessedVideoRequestModel videoRequestModel);
-        public Task GetVideo(GetSavedVideo videoRequestModel);
-        public Task<string> UploadVideoToS3BucketAsync(UploadVideoRequestModel requestDto);
+        Task<GetAllVideosResponseModel> GetAllVideos(GetAllVideosRequestModel videoRequestModel);
+
+        Task<GetVideoDetailsResponseModel> GetVideoDetails(GetVideoDetailsRequestModel videoRequestModel);
+        Task SaveVideo(UploadVideoRequestModel videoRequestModel);
+        public Task<UploadVideoResponseModel> UploadVideoToS3BucketAsync(UploadVideoRequestModel requestDto);
     }
 }
