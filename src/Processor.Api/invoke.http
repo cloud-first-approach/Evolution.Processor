@@ -1,0 +1,20 @@
+GET https://example.com/comments?page=2&pageSize=10
+
+###
+
+GET https://example.com/topics/1 HTTP/1.1
+
+
+###
+GET https://httpbin.org/basic-auth/user/passwd HTTP/1.1
+Authorization: Basic user:passwd
+
+###
+
+POST https://example.com/comments HTTP/1.1
+content-type: application/json
+
+{
+    "name": "sample",
+    "time": "Wed, 21 Oct 2015 18:27:50 GMT"
+}

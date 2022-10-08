@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: processor-api-deployment
+  namespace: evolution
+
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: processor-api
+  template:
+    metadata:
+      labels:
+        app: processor-api
+    
+    spec:
+      containers:
+      - name: processor-api
+        image: rohitrustagi007/evo_processor:latest
+        env: 
+          - name: ASPNETCORE_ENVIRONMENT
+            value: "Production" 
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: processor-api-cluster-ip
+  namespace: evolution
+spec:
+  type: ClusterIP
+  selector:
+    app: processor-api
+  ports:
+  - name: processor-api-port
+    protocol: TCP
+    port: 80
+    targetPort: 80

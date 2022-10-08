@@ -1,0 +1,10 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: evolution-config
+  namespace: evolution
+data:
+  config.json: |
+    {
+      "environment": "prod"
+    }
