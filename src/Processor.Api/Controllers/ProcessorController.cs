@@ -8,11 +8,6 @@ namespace Processor.Api.Controllers
     [Route("[controller]")]
     public class ProcessorController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
-
         private readonly ILogger<ProcessorController> _logger;
 
         public ProcessorController(ILogger<ProcessorController> logger)
@@ -20,18 +15,11 @@ namespace Processor.Api.Controllers
             _logger = logger;
         }
 
-        [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<string> Get()
-        {
-            return Summaries;
-        }
-
-
         [Topic("pubsub", "upload")]
         [HttpPost("process")]
         public async Task<IActionResult> Process(UploadVideoUploadedEvent item)
         {
-            _logger.Log(LogLevel.Information,"event raised");
+            _logger.Log(LogLevel.Information, item.Url);
             return Ok("event raised");
         }
     }
