@@ -1,6 +1,7 @@
 # Introduction 
-Uploader Service
+Processor Service
 
+dapr run --log-level debug --app-port 3000 --app-id processor --app-protocol http --dapr-http-port 3501 --components-path ../../dapr/components -- dotnet run
 # Getting Started
 TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
 1.	Installation process
@@ -24,8 +25,8 @@ dotnet ef database update InitialCreate
 docker pull mcr.microsoft.com/mssql/server
 docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=password@1" -p 1433:1433 --name sql -d mcr.microsoft.com/mssql/server:2017-latest
 
-dapr run --app-id uploader --app-port 2000 -- dotnet run
-dapr run --app-id identity --app-port 2000 --components-path ../../deploy/dapr/ -- dotnet run
+
+dapr run --app-port 3000 --app-id processor --app-protocol http --dapr-http-port 3501 --components-path ../../dapr/components -- dotnet run
 
 ```
 
