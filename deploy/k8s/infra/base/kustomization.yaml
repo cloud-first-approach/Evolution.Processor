@@ -5,8 +5,8 @@ resources:
   - namespace.yaml
   - configmap.yaml
   - rabbitmq/rabbitmq-server.yaml
-  - mssql/local-pvc.yaml
-  - mssql/mssql-server.yaml
+  # - mssql/local-pvc.yaml
+  # - mssql/mssql-server.yaml
   - dapr/app-secretstore-component.yaml
   - dapr/appsettings-configstore-component.yaml
   - dapr/login-statestore-component.yaml
