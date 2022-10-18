@@ -20,10 +20,3 @@ spec:
             name: processor-api-cluster-ip
             port: 
               number: 80
-      - path: /swagger
-        pathType: Prefix
-        backend:
-          service:
-            name: processor-api-cluster-ip
-            port: 
-              number: 80
