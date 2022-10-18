@@ -10,7 +10,7 @@ metadata:
     name: processor-ingress
 spec:
   rules:
-  - host: acme.com
+  - host: processor.k8
     http:
       paths:
       - path: /process
