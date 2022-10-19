@@ -21,4 +21,4 @@ spec:
           service:
             name: processor-api-cluster-ip
             port: 
-              number: 3001
+              number: 80
