@@ -7,18 +7,32 @@ spec:
   selector:
     matchLabels:
       app: processor-api
-  replicas: 2
+  replicas: 1
   template:
     metadata:
       annotations:
         dapr.io/enabled: "true"
-        dapr.io/app-id: "identity"
+        dapr.io/app-id: "processor"
         dapr.io/app-port: "80"
-        #dapr.io/config: "tracing"
+    #     dapr.io/config: "tracing"
     spec:
       containers:
         - name: processor-api
           env: 
           - name: ASPNETCORE_ENVIRONMENT
-            value: "Development" 
+            value: "Development"
+          - name: AWS_ACCESS_KEY
+            valueFrom: 
+              secretKeyRef:
+                name: access 
+                key: AWS_ACCESS_KEY
+          - name: AWS_SECRET_KEY
+            valueFrom: 
+              secretKeyRef:
+                name: secret 
+                key: AWS_SECRET_KEY 
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m" 
     

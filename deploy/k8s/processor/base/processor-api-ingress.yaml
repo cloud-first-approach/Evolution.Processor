@@ -4,13 +4,15 @@ metadata:
   name: processor-ingress
   namespace: evolution
   annotations: 
-      kubernetes.io/ingress.class: nginx
+      # kubernetes.io/ingress.class: nginx
       nginx.ingress.kubernetes.io/use-regex: 'true'
+      nginx.org/mergeable-ingress-type: "minion"
   labels:
     name: processor-ingress
 spec:
+  ingressClassName: nginx
   rules:
-  - host: acme.com
+  - host: evolution.k8
     http:
       paths:
       - path: /process
