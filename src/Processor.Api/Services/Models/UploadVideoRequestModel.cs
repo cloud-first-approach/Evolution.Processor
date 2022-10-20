@@ -8,5 +8,8 @@ namespace Processor.Api.Services.Models
         public IFormFile File { get; set; }
         public string Description { get; set; }
 
+        public string? BucketName { get; set; }
+        public string? BucketFolder { get; set; }
+
     }
 }

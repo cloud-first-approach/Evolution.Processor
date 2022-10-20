@@ -1,3 +1,4 @@
+using Amazon.S3.Model;
 using Dapr;
 using Dapr.Client;
 using Microsoft.AspNetCore.Mvc;
@@ -18,7 +19,12 @@ namespace Processor.Api.Controllers
         private readonly IStorageService _storageService;
         private readonly DaprClient _daprClient;
 
-        public ProcessorController(ILogger<ProcessorController> logger, IServiceScopeFactory serviceScopeFactory, IStorageService storageService, DaprClient daprClient)
+        public ProcessorController(
+            ILogger<ProcessorController> logger,
+            IServiceScopeFactory serviceScopeFactory,
+            IStorageService storageService,
+            DaprClient daprClient
+        )
         {
             _logger = logger;
             _serviceScopeFactory = serviceScopeFactory;
@@ -46,15 +52,41 @@ namespace Processor.Api.Controllers
         public async Task<IActionResult> Get([FromQuery] string key, [FromQuery] string bucketName)
         {
             var httpClient = DaprClient.CreateInvokeHttpClient("uploader");
-            var httpresponse = await httpClient.GetAsync("/Uploads/video?key=files/emf3dwde.sx2.mp4");
-            httpresponse.EnsureSuccessStatusCode();
-            var json = await httpresponse.Content.ReadAsStringAsync();
-            _logger.LogInformation(json);
-            var details = await _storageService.GetVideoDetails(new Services.Models.GetVideoDetailsRequestModel()
+            _logger.LogInformation("httpClient " + httpClient.BaseAddress);
+            try
             {
-                Key = key,
-                BucketName = bucketName
-            });
+                var httpresponse = await httpClient.GetAsync($"uploads/all");
+
+                httpresponse.EnsureSuccessStatusCode();
+                var json = await httpresponse.Content.ReadAsStringAsync();
+                _logger.LogInformation(json);
+            }
+            catch (System.Exception ex)
+            {
+                _logger.LogInformation("First App Id " + ex.Message);
+            }
+            try
+            {
+                var httpresponse = await httpClient.GetAsync($"uploads/all");
+
+                var dapr = DaprClient.CreateInvokeHttpClient();
+                var res = await dapr.GetAsync("http://uploader/uploads/all");
+                res.EnsureSuccessStatusCode();
+                _logger.LogInformation(await res.Content.ReadAsStringAsync());
+            }
+            catch (System.Exception ex)
+            {
+                _logger.LogInformation("Direct " + ex.Message);
+            }
+           
+
+            var details = await _storageService.GetVideoDetails(
+                new Services.Models.GetVideoDetailsRequestModel()
+                {
+                    Key = key,
+                    BucketName = bucketName
+                }
+            );
             _logger.Log(LogLevel.Information, details.Size.ToString());
             _logger.Log(LogLevel.Information, details.LastModified.ToString());
             return Ok(details);
