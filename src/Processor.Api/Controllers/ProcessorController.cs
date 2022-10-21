@@ -1,12 +1,9 @@
-using Amazon.S3.Model;
 using Dapr;
 using Dapr.Client;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Processor.Api.Models;
 using Processor.Api.Services;
-using System.Runtime.InteropServices;
+
 
 namespace Processor.Api.Controllers
 {
@@ -51,32 +48,19 @@ namespace Processor.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] string key, [FromQuery] string bucketName)
         {
-            var httpClient = DaprClient.CreateInvokeHttpClient("uploader");
-            _logger.LogInformation("httpClient " + httpClient.BaseAddress);
             try
             {
-                var httpresponse = await httpClient.GetAsync($"uploads/all");
+               
+                CancellationTokenSource source = new CancellationTokenSource();
 
-                httpresponse.EnsureSuccessStatusCode();
-                var json = await httpresponse.Content.ReadAsStringAsync();
-                _logger.LogInformation(json);
+                var videos = await _daprClient.InvokeMethodAsync<UploadApiVideoModel>(HttpMethod.Get,"uploader", "/uploads", source.Token);
+
+                _logger.LogInformation("Key " + videos.Videos[0].Key);
+              
             }
             catch (System.Exception ex)
             {
                 _logger.LogInformation("First App Id " + ex.Message);
-            }
-            try
-            {
-                var httpresponse = await httpClient.GetAsync($"uploads/all");
-
-                var dapr = DaprClient.CreateInvokeHttpClient();
-                var res = await dapr.GetAsync("http://uploader/uploads/all");
-                res.EnsureSuccessStatusCode();
-                _logger.LogInformation(await res.Content.ReadAsStringAsync());
-            }
-            catch (System.Exception ex)
-            {
-                _logger.LogInformation("Direct " + ex.Message);
             }
            
 

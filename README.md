@@ -28,6 +28,9 @@ docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=password@1" -p 1433:1433 --name sq
 
 dapr run --app-ssl --app-port 3000 --app-id processor --app-protocol http --dapr-http-port 3501 --components-path ../../dapr/components -- dotnet run
 
+
+dapr run --app-port 3000 --app-id processor --app-protocol http --dapr-http-port 3500 --components-path ../../dapr/components -- dotnet run
+
 ```
 
 ### Getting Started
