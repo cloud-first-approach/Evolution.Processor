@@ -1,9 +1,11 @@
 using Dapr;
 using Dapr.Client;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Processor.Api.Models;
 using Processor.Api.Services;
-
+using Processor.Api.Services.Models;
+using System.Text.Json.Serialization;
 
 namespace Processor.Api.Controllers
 {
@@ -50,30 +52,35 @@ namespace Processor.Api.Controllers
         {
             try
             {
-               
+                var client = DaprClient.CreateInvokeHttpClient(appId: "uploader");
+                var response  = await client.GetFromJsonAsync<GetAllVideosResponseModel>("uploads");
+
+                _logger.LogInformation(Convert.ToString(response?.Videos?.Count));
+
                 CancellationTokenSource source = new CancellationTokenSource();
-
-                var videos = await _daprClient.InvokeMethodAsync<UploadApiVideoModel>(HttpMethod.Get,"uploader", "/uploads", source.Token);
-
-                _logger.LogInformation("Key " + videos.Videos[0].Key);
-              
+                _logger.LogInformation("been here");
+                var videos = await _daprClient.InvokeMethodAsync<GetAllVideosResponseModel>(HttpMethod.Get,"uploader", "/uploads", source.Token);
+                _logger.LogInformation("been here too ");
+                return Ok(response);
             }
             catch (System.Exception ex)
             {
-                _logger.LogInformation("First App Id " + ex.Message);
+                _logger.LogInformation("ERROR " + ex.Message);
+                _logger.LogInformation(ex.StackTrace);
+                _logger.LogInformation(ex.InnerException?.StackTrace);
             }
            
 
-            var details = await _storageService.GetVideoDetails(
-                new Services.Models.GetVideoDetailsRequestModel()
-                {
-                    Key = key,
-                    BucketName = bucketName
-                }
-            );
-            _logger.Log(LogLevel.Information, details.Size.ToString());
-            _logger.Log(LogLevel.Information, details.LastModified.ToString());
-            return Ok(details);
+            // var details = await _storageService.GetVideoDetails(
+            //     new Services.Models.GetVideoDetailsRequestModel()
+            //     {
+            //         Key = key,
+            //         BucketName = bucketName
+            //     }
+            // );
+            // _logger.Log(LogLevel.Information, details.Size.ToString());
+            // _logger.Log(LogLevel.Information, details.LastModified.ToString());
+            return Ok("executed");
         }
     }
 }
