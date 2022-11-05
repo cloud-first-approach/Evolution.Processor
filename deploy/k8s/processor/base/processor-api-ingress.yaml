@@ -15,7 +15,7 @@ spec:
   - host: evolution.k8
     http:
       paths:
-      - path: /process
+      - path: /processor
         pathType: Prefix
         backend:
           service:
