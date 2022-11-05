@@ -60,7 +60,7 @@ kubectl apply -f deploy/k8s/services
 
 kubectl get pods -n evolution
 
-kubectl port-forward svc/uploader-api-cluster-ip 80 -n evolution
+kubectl port-forward svc/processor-api-cluster-ip 3000:80 -n evolution
 
 
 
