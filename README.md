@@ -1,18 +1,13 @@
-# Introduction 
-Processor Service
+# Processor Service 
 
-dapr run --log-level debug --app-port 3000 --app-id processor --app-protocol http --dapr-http-port 3501 --components-path ../../dapr/components -- dotnet run
-# Getting Started
-TODO: Guide users through getting your code up and running on their own system. In this section you can talk about:
-1.	Installation process
-2.	Software dependencies
-3.	Latest releases
-4.	API references
+## Key Notes
+- The service follows the `Open Api Spec` and `REST` standards.
+- The service is configured to run using `kestrel` server on port `2000` 
+- The service exposes a health check at `/health` and `/healthz` endpoint.
+- The service exposes a swagger endpoint for `/swagger` only in `Development` env.
+- The service exposes a metric endpoint `/metricstext` for text based and `/metrics` for protobuf in `prometheus` format.
+- The service uses `dapr components`
 
-git branch -m master main
-git fetch origin
-git branch -u origin/main main
-git remote set-head origin -a
 
 
 ## Local Development
@@ -37,12 +32,9 @@ dapr run --log-level debug --app-port 3000 --app-id processor --dapr-http-port 3
 ```sh
 
 #STEP 1
-kind create cluster
-
-#STEP 2
 dapr init -k
 
-#STEP 3
+#STEP 2
 kubectl create secret generic mssql --from-literal=SA_PASSWORD="password@1" -n evolution
 
 #STEP 4 (Redis)
