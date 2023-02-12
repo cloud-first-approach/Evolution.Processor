@@ -11,10 +11,10 @@ spec:
   template:
     metadata:
       annotations:
-        dapr.io/enabled: "true"
-        dapr.io/app-id: "processor"
-        dapr.io/app-port: "80"
-        dapr.io/config: "tracing"
+        # dapr.io/enabled: "true"
+        # dapr.io/app-id: "processor"
+        # dapr.io/app-port: "80"
+        # dapr.io/config: "tracing"
         linkerd.io/inject: enabled
     spec:
       containers:
