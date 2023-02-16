@@ -17,18 +17,21 @@ namespace Processor.Api.Controllers
         private readonly IServiceScopeFactory _serviceScopeFactory;
         private readonly IStorageService _storageService;
         private readonly DaprClient _daprClient;
+        private readonly IHttpClientFactory _httpClientFactory;
 
         public ProcessorController(
             ILogger<ProcessorController> logger,
             IServiceScopeFactory serviceScopeFactory,
             IStorageService storageService,
-            DaprClient daprClient
+            DaprClient daprClient,
+            IHttpClientFactory httpClientFactory
         )
         {
             _logger = logger;
             _serviceScopeFactory = serviceScopeFactory;
             _storageService = storageService;
             _daprClient = daprClient;
+            _httpClientFactory = httpClientFactory;
         }
 
         [Topic("pubsub", "upload")]
@@ -52,14 +55,32 @@ namespace Processor.Api.Controllers
         {
             try
             {
+                var client = _httpClientFactory.CreateClient();
+                var response = client.GetAsync("http://uploader-api-cluster-ip:80/uploads/test");
+                 return Ok(response);
+            }
+            catch (System.Exception ex)
+            {
+                _logger.LogInformation("ERROR " + ex.Message);
+                _logger.LogInformation(ex.StackTrace);
+                _logger.LogInformation(ex.InnerException?.StackTrace);
+            }
+
+            try
+            {
                 var client = DaprClient.CreateInvokeHttpClient(appId: "uploader");
-                var response  = await client.GetFromJsonAsync<GetAllVideosResponseModel>("uploads");
+                var response = await client.GetFromJsonAsync<GetAllVideosResponseModel>("uploads");
 
                 _logger.LogInformation(Convert.ToString(response?.Videos?.Count));
 
                 CancellationTokenSource source = new CancellationTokenSource();
                 _logger.LogInformation("been here");
-                var videos = await _daprClient.InvokeMethodAsync<GetAllVideosResponseModel>(HttpMethod.Get,"uploader", "/uploads", source.Token);
+                var videos = await _daprClient.InvokeMethodAsync<GetAllVideosResponseModel>(
+                    HttpMethod.Get,
+                    "uploader",
+                    "/uploads",
+                    source.Token
+                );
                 _logger.LogInformation("been here too ");
                 return Ok(response);
             }
@@ -69,7 +90,6 @@ namespace Processor.Api.Controllers
                 _logger.LogInformation(ex.StackTrace);
                 _logger.LogInformation(ex.InnerException?.StackTrace);
             }
-           
 
             // var details = await _storageService.GetVideoDetails(
             //     new Services.Models.GetVideoDetailsRequestModel()
