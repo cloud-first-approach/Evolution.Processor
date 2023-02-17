@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: processor-api
-        image: rohitrustagi007/evo_processor:51
+        image: rohitrustagi007/evo_processor:55
         env: 
           - name: ASPNETCORE_ENVIRONMENT
             value: "Production" 
