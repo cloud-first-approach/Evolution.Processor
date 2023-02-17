@@ -1,0 +1,15 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+  name: processor-api
+spec:
+  endpoints:
+  - interval: 30s
+    port: processor-api-port
+    path: /metrics-text
+  selector:
+    matchLabels:
+      app: processor-api
+  namespaceSelector:
+    any: true
