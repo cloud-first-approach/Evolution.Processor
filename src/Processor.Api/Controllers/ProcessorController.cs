@@ -19,12 +19,15 @@ namespace Processor.Api.Controllers
         private readonly DaprClient _daprClient;
         private readonly IHttpClientFactory _httpClientFactory;
 
+        private readonly IConfiguration _configuration;
+
         public ProcessorController(
             ILogger<ProcessorController> logger,
             IServiceScopeFactory serviceScopeFactory,
             IStorageService storageService,
             DaprClient daprClient,
-            IHttpClientFactory httpClientFactory
+            IHttpClientFactory httpClientFactory,
+            IConfiguration configuration
         )
         {
             _logger = logger;
@@ -32,6 +35,7 @@ namespace Processor.Api.Controllers
             _storageService = storageService;
             _daprClient = daprClient;
             _httpClientFactory = httpClientFactory;
+            _configuration = configuration;
         }
 
         [Topic("pubsub", "upload")]
@@ -55,9 +59,9 @@ namespace Processor.Api.Controllers
         {
             try
             {
+                var uploader = _configuration.GetSection("Services").GetValue<string>("Uploader");
                 var client = _httpClientFactory.CreateClient();
-                //var response = await client.GetAsync("http://uploader-api-cluster-ip:80/uploads/test");
-                var response = await client.GetAsync("http://localhost:2000/uploads/test");
+                var response = await client.GetAsync($"{uploader}/uploads/test");
                 if (response.IsSuccessStatusCode)
                 {
                     return Ok(await response.Content.ReadAsStringAsync());
