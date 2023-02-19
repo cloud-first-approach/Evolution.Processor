@@ -3,6 +3,8 @@ kind: Service
 metadata:
   name: processor-api-cluster-ip
   namespace: evolution
+  labels:
+    app: processor-api
 spec:
   type: ClusterIP
   selector:

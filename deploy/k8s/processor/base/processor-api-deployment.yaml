@@ -15,10 +15,29 @@ spec:
     spec:
       containers:
       - name: processor-api
-        image: rohitrustagi007/evo_processor:51
+        image: rohitrustagi007/evo_processor:55
         env: 
           - name: ASPNETCORE_ENVIRONMENT
-            value: "Production" 
+            value: "Production"
+        startupProbe:
+          httpGet:
+            path: /health
+            port: 80
+          failureThreshold: 30
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 80
+          initialDelaySeconds: 0
+          periodSeconds: 10
+          timeoutSeconds: 1
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 80
+          successThreshold: 3
         resources:
           limits:
             memory: "128Mi"
