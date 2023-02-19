@@ -22,7 +22,7 @@ spec:
           image: rohitrustagi007/evo_processor:0.1.0
           env: 
           - name: ASPNETCORE_ENVIRONMENT
-            value: "Development"
+            value: "Production"
           - name: AWS_ACCESS_KEY
             valueFrom: 
               secretKeyRef:
