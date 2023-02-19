@@ -63,7 +63,7 @@ namespace Processor.Api.Controllers
                  _logger.LogInformation(uploader);
                 var client = _httpClientFactory.CreateClient();
                 var response = await client.GetAsync($"{uploader}/uploads/test");
-                 _logger.LogInformation(response.IsSuccessStatusCode);
+                 _logger.LogInformation(response.IsSuccessStatusCode.ToString());
                 if (response.IsSuccessStatusCode)
                 {
                     return Ok(await response.Content.ReadAsStringAsync());
