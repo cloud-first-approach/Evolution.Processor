@@ -60,8 +60,10 @@ namespace Processor.Api.Controllers
             try
             {
                 var uploader = _configuration.GetSection("Services").GetValue<string>("Uploader");
+                 _logger.LogInformation(uploader);
                 var client = _httpClientFactory.CreateClient();
                 var response = await client.GetAsync($"{uploader}/uploads/test");
+                 _logger.LogInformation(response.IsSuccessStatusCode);
                 if (response.IsSuccessStatusCode)
                 {
                     return Ok(await response.Content.ReadAsStringAsync());
