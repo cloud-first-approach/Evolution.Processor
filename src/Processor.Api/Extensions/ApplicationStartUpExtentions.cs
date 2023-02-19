@@ -52,6 +52,7 @@ namespace Processor.Api.Extensions
 
             //app.UseAuthorization();
             //app.UseJwtParser();
+            app.UseOpenTelemetryPrometheusScrapingEndpoint();
 
             app.UseCloudEvents();
             app.MapControllers();

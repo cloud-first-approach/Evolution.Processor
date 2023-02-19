@@ -56,7 +56,8 @@ namespace Processor.Api.Controllers
             try
             {
                 var client = _httpClientFactory.CreateClient();
-                var response = await client.GetAsync("http://uploader-api-cluster-ip:80/uploads/test");
+                //var response = await client.GetAsync("http://uploader-api-cluster-ip:80/uploads/test");
+                var response = await client.GetAsync("http://localhost:2000/uploads/test");
                 if (response.IsSuccessStatusCode)
                 {
                     return Ok(await response.Content.ReadAsStringAsync());
