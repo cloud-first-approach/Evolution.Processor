@@ -7,7 +7,7 @@ spec:
   endpoints:
   - interval: 30s
     port: processor-api-port
-    path: /metrics-text
+    path: /metrics
   selector:
     matchLabels:
       app: processor-api
