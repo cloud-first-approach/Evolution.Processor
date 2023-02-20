@@ -4,5 +4,5 @@ kind: Kustomization
 resources:
   - processor-api-deployment.yaml
   - processor-api-service.yaml
-  - processor-api-ingress.yaml
+  #- processor-api-ingress.yaml
 
