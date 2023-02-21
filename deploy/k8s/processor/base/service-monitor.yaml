@@ -3,7 +3,7 @@ kind: ServiceMonitor
 metadata:
   labels:
   name: processor-api
-  namespace: processor
+  namespace: monitoring
 spec:
   endpoints:
   - interval: 30s
