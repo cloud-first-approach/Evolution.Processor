@@ -70,9 +70,9 @@ spec:
         timeout: 30s
         metadata:
           type: bash
-          cmd: "curl -sd 'test' http://processor-api-deployment-primary.evolution:80/healthz"
+          cmd: "curl -sd 'test' http://processor-api-deployment-primary.processor:80/healthz"
       - name: load-test
         type: rollout
         url: http://flagger-loadtester.evolution/
         metadata:
-          cmd: "hey -z 2m -q 10 -c 2 http://processor-api-deployment.evolution:80/healthz"
+          cmd: "hey -z 2m -q 10 -c 2 http://processor-api-deployment.processor:80/healthz"
