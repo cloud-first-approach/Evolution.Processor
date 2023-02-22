@@ -19,6 +19,6 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: processor-api-cluster-ip
+            name: processor-api
             port: 
               number: 80
