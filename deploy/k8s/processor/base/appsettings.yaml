@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: appsettings
+  namespace: processor
+data:
+  appsettings.k8s.json: |-
+    {
+      "Logging": {
+        "LogLevel": {
+          "Default": "Information",
+          "Microsoft": "Warning",
+          "Microsoft.Hosting.Lifetime": "Information"
+        }
+      },
+      "Services": {
+        "Uploader": "http://uploader-api.uploader"
+      },
+      "AllowedHosts": "*",
+    }

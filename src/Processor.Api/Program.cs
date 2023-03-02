@@ -30,6 +30,8 @@ Log.Logger = new LoggerConfiguration().MinimumLevel
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add configuration to the application
+builder.Configuration.AddJsonFile("appsettings.k8s.json", optional: true);
 
 // Note: Switch between Zipkin/Jaeger/OTLP/Console by setting UseTracingExporter in appsettings.json.
 var tracingExporter = builder.Configuration.GetValue<string>("UseTracingExporter").ToLowerInvariant();

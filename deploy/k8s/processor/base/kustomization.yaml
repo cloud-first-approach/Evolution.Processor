@@ -4,8 +4,10 @@ kind: Kustomization
 resources:
   - namespace.yaml
   - secrets.yaml
+  - appsettings.yaml
   - deployment.yaml
+  - hpa.yaml
   - service.yaml
-  - ingress.yaml
+  - gateway.yaml
   #- service-monitor.yaml
 
