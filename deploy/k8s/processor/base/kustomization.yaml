@@ -9,8 +9,9 @@ resources:
   - hpa.yaml
   - service.yaml
   - gateway.yaml
+  - canary.yaml
   #- service-monitor.yaml
-  
+
 generatorOptions:
   disableNameSuffixHash: true
 

@@ -10,10 +10,10 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: processor-api
-  # autoscalerRef:
-  #   apiVersion: autoscaling/v2beta2
-  #   kind: HorizontalPodAutoscaler
-  #   name: identity-hpa
+  autoscalerRef:
+    apiVersion: autoscaling/v2beta2
+    kind: HorizontalPodAutoscaler
+    name: processor-hpa
   # to make progress before it is rollback (default 600s)
   progressDeadlineSeconds: 60
   service:
@@ -66,13 +66,13 @@ spec:
     webhooks:
       - name: acceptance-test
         type: pre-rollout
-        url: http://flagger-loadtester.evolution/
+        url: http://flagger-loadtester.flagger-system/
         timeout: 30s
         metadata:
           type: bash
-          cmd: "curl -sd 'test' http://processor-api-deployment-primary.processor:80/healthz"
+          cmd: "curl -sd 'test' http://processor-api-primary.processor:80/healthz"
       - name: load-test
         type: rollout
-        url: http://flagger-loadtester.evolution/
+        url: http://flagger-loadtester.flagger-system/
         metadata:
-          cmd: "hey -z 2m -q 10 -c 2 http://processor-api-deployment.processor:80/healthz"
+          cmd: "hey -z 2m -q 10 -c 2 http://processor-api-canary.processor:80/healthz"
