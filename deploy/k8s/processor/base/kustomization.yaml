@@ -10,4 +10,12 @@ resources:
   - service.yaml
   - gateway.yaml
   #- service-monitor.yaml
+  
+generatorOptions:
+  disableNameSuffixHash: true
 
+configMapGenerator:
+  - name: appsettings
+    namespace: processor
+    files:
+      - "appsettings.K8s.json"
