@@ -1,8 +1,8 @@
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: processor-api-deployment
-  namespace: evolution
+  name: processor-api
+  namespace: processor
 spec:
   selector:
     matchLabels:
@@ -15,7 +15,7 @@ spec:
         # dapr.io/app-id: "processor"
         # dapr.io/app-port: "80"
         # dapr.io/config: "tracing"
-        linkerd.io/inject: enabled
+        # linkerd.io/inject: enabled
     spec:
       containers:
         - name: processor-api

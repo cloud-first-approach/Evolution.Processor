@@ -1,8 +1,8 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: processor-api-deployment
-  namespace: evolution
+  name: processor-api
+  namespace: processor
 spec:
   replicas: 1
   selector:
@@ -13,9 +13,17 @@ spec:
       labels:
         app: processor-api
     spec:
+      volumes:
+        - name: appsettings-volume
+          configMap:
+            name: appsettings
       containers:
       - name: processor-api
         image: rohitrustagi007/evo_processor:64
+        volumeMounts:
+          - name: appsettings-volume
+            mountPath: /app/appsettings.k8s.json
+            subPath: appsettings.k8s.json
         env: 
           - name: ASPNETCORE_ENVIRONMENT
             value: "Production"

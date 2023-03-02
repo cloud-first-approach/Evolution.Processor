@@ -1,0 +1,13 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: processor
+  # **** Enable OSM at namespace level  
+  labels:
+    #openservicemesh.io/monitored-by: osm
+    #kuma.io/sidecar-injection: enabled
+    istio-injection: enabled
+  annotations:
+    istio-injection: enabled
+    #'openservicemesh.io/sidecar-injection': 'enabled'
+    #'openservicemesh.io/metrics': 'enabled'
