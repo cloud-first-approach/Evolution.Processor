@@ -6,8 +6,17 @@ resources:
   - secrets.yaml
   - appsettings.yaml
   - deployment.yaml
-  - hpa.yaml
+  #- hpa.yaml
   - service.yaml
-  - gateway.yaml
+  #- gateway.yaml
+  #- canary.yaml
   #- service-monitor.yaml
 
+generatorOptions:
+  disableNameSuffixHash: true
+
+configMapGenerator:
+  - name: appsettings
+    namespace: processor
+    files:
+      - "appsettings.K8s.json"

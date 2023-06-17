@@ -60,10 +60,10 @@ namespace Processor.Api.Controllers
             try
             {
                 var uploader = _configuration.GetSection("Services").GetValue<string>("Uploader");
-                 _logger.LogInformation(uploader);
+                _logger.LogInformation(uploader);
                 var client = _httpClientFactory.CreateClient();
                 var response = await client.GetAsync($"{uploader}/uploads/test");
-                 _logger.LogInformation(response.IsSuccessStatusCode.ToString());
+                _logger.LogInformation(response.IsSuccessStatusCode.ToString());
                 if (response.IsSuccessStatusCode)
                 {
                     return Ok(await response.Content.ReadAsStringAsync());
@@ -115,6 +115,51 @@ namespace Processor.Api.Controllers
             // _logger.Log(LogLevel.Information, details.Size.ToString());
             // _logger.Log(LogLevel.Information, details.LastModified.ToString());
             return Ok("executed");
+        }
+
+
+        [HttpGet]
+        [Route("delay/{delay}")]
+        public async Task<IActionResult> GetDelay(int delay)
+        {
+            try
+            {
+                var uploader = _configuration.GetSection("Services").GetValue<string>("Uploader");
+                _logger.LogInformation(uploader);
+                var client = _httpClientFactory.CreateClient();
+                var response = await client.GetAsync($"{uploader}/uploads/delay/{delay}");
+                _logger.LogInformation(response.IsSuccessStatusCode.ToString());
+                return Ok(await response.Content.ReadAsStringAsync());
+            }
+            catch (System.Exception ex)
+            {
+                _logger.LogInformation("ERROR " + ex.Message);
+                _logger.LogInformation(ex.StackTrace);
+                _logger.LogInformation(ex.InnerException?.StackTrace);
+                return NotFound();
+            }
+        }
+
+        [HttpGet]
+        [Route("status/{status}")]
+        public async Task<IActionResult> GetStatus(int status)
+        {
+            try
+            {
+                var uploader = _configuration.GetSection("Services").GetValue<string>("Uploader");
+                _logger.LogInformation(uploader);
+                var client = _httpClientFactory.CreateClient();
+                var response = await client.GetAsync($"{uploader}/uploads/status/{status}");
+                _logger.LogInformation(response.IsSuccessStatusCode.ToString());
+                return Ok(await response.Content.ReadAsStringAsync());
+            }
+            catch (System.Exception ex)
+            {
+                _logger.LogInformation("ERROR " + ex.Message);
+                _logger.LogInformation(ex.StackTrace);
+                _logger.LogInformation(ex.InnerException?.StackTrace);
+                return NotFound();
+            }
         }
     }
 }
