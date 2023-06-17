@@ -6,10 +6,10 @@ resources:
   - secrets.yaml
   - appsettings.yaml
   - deployment.yaml
-  - hpa.yaml
+  #- hpa.yaml
   - service.yaml
-  - gateway.yaml
-  - canary.yaml
+  #- gateway.yaml
+  #- canary.yaml
   #- service-monitor.yaml
 
 generatorOptions:
