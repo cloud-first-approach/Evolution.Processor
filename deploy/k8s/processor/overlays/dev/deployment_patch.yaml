@@ -20,6 +20,7 @@ spec:
       containers:
         - name: processor-api
           image: rohitrustagi007/evo_processor:0.1.0
+          imagePullPolicy: Always
           env: 
           - name: ASPNETCORE_ENVIRONMENT
             value: "Production"

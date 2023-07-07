@@ -11,6 +11,7 @@ spec:
     app: processor-api
   ports:
   - name: processor-api-port
+    appProtocol : http
     protocol: TCP
     port: 80
     targetPort: 80
